@@ -16,8 +16,15 @@ func (s Server) createOrder(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
+	valE := order.Validate()
+	if valE != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"Error": valE.Error()})
+	}
+
 	order.Status = "CREATED"
 	order.Id = primitive.NewObjectID()
+	total, _ := order.CalculateTotal()
+	order.Total = total
 
 	if err := s.storage.CreateOrder(order); err != nil {
 		slog.Error("Error while creating the order", "Err", err)
@@ -26,7 +33,13 @@ func (s Server) createOrder(c echo.Context) error {
 
 	slog.Info("Order created successfully")
 
-	s.producer.ProduceOrderCreated(order.Id.Hex(), order)
+	event := types.OrderCreatedEvent{
+		Type:            "OrderCreated",
+		DataContentType: "application/json",
+		Data:            order,
+	}
 
-	return c.JSON(http.StatusOK, map[string]string{})
+	s.producer.ProduceOrderCreated(order.Id.Hex(), event)
+
+	return c.JSON(http.StatusOK, order)
 }

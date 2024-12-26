@@ -21,7 +21,8 @@ func (s *Server) Start() {
 	e := s.r
 	e.Use(middleware.RequestID())
 
-	e.POST("/", s.createOrder)
+	g := e.Group("/api/orders/v1.0")
+	g.POST("/", s.createOrder)
 
 	e.Start(":" + s.port)
 }

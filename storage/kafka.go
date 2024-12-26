@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/segmentio/kafka-go"
+	"github.com/shyam0507/pd-order/types"
 )
 
 type KafkaProducer struct {
@@ -13,7 +14,7 @@ type KafkaProducer struct {
 }
 
 // ProduceOrderCreated implements Producer.
-func (k KafkaProducer) ProduceOrderCreated(key string, value any) error {
+func (k KafkaProducer) ProduceOrderCreated(key string, value types.OrderCreatedEvent) error {
 
 	m, _ := json.Marshal(value)
 	err := k.writer.WriteMessages(context.Background(),
