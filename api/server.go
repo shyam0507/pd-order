@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log/slog"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/shyam0507/pd-order/storage"
@@ -21,7 +23,12 @@ func (s *Server) Start() {
 	e := s.r
 	e.Use(middleware.RequestID())
 
-	e.POST("/", s.createOrder)
+	g := e.Group("/api/orders/v1.0")
+
+	g.POST("/", s.createOrder)
+
+	slog.Info("Server started on port", "Port", s.port)
 
 	e.Start(":" + s.port)
+
 }

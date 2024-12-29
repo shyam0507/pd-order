@@ -10,6 +10,7 @@ import (
 )
 
 func (s Server) createOrder(c echo.Context) error {
+	slog.Info("Creating order")
 	var order types.Order
 	if err := c.Bind(&order); err != nil {
 		slog.Error("Error while creating the order", "Err", err)
@@ -26,7 +27,18 @@ func (s Server) createOrder(c echo.Context) error {
 
 	slog.Info("Order created successfully")
 
-	s.producer.ProduceOrderCreated(order.Id.Hex(), order)
+	event := types.OrderCreatedEvent{
+		Id:              order.Id.Hex(),
+		Type:            "OrderCreated",
+		Source:          "OrderService",
+		SpecVersion:     "1.0",
+		Data:            order,
+		DataContentType: "application/json",
+	}
 
-	return c.JSON(http.StatusOK, map[string]string{})
+	s.producer.ProduceOrderCreated(order.Id.Hex(), event)
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"orderId": order.Id.Hex(),
+	})
 }

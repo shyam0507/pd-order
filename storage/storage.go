@@ -8,8 +8,10 @@ type Storage interface {
 }
 
 type Producer interface {
-	ProduceOrderCreated(string, any) error
+	ProduceOrderCreated(string, types.OrderCreatedEvent) error
+	ProduceOrderConfirmed(string, types.OrderConfirmedEvent) error
 }
 
 type Consumer interface {
+	ConsumePaymentReceived() error
 }

@@ -8,8 +8,12 @@ import (
 func main() {
 
 	mongoStorage := storage.NewMongoStorage("mongodb://localhost:27017", "pd_orders")
-	producer := storage.NewKafkaProducer("order.created", []string{"localhost:9092"})
+	orderCreatedproducer := storage.NewKafkaProducer("order.created", []string{"localhost:9092"})
+	orderConfirmedProducer := storage.NewKafkaProducer("order.confirmed", []string{"localhost:9092"})
+	consumer := storage.NewKafkaConsumer("payment.received", []string{"localhost:9092"}, mongoStorage, orderConfirmedProducer)
 
-	server := api.NewServer("3005", mongoStorage, producer)
+	go consumer.ConsumePaymentReceived()
+
+	server := api.NewServer("3005", mongoStorage, orderCreatedproducer)
 	server.Start()
 }

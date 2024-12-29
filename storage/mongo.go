@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/shyam0507/pd-order/types"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -29,7 +31,19 @@ func (m MongoStorage) CreateOrder(o types.Order) error {
 
 // UpdateOrder implements Storage.
 func (m MongoStorage) UpdateOrder(id string, status string) error {
-	panic("unimplemented")
+
+	oId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
+	_, err = m.client.Database(m.dbName).Collection(Collection_Name).UpdateOne(
+		context.Background(),
+		bson.M{"_id": oId},
+		bson.M{"$set": bson.M{"status": status}},
+	)
+
+	return err
 }
 
 func NewMongoStorage(uri string, dbName string) Storage {
