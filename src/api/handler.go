@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/shyam0507/pd-order/types"
+	"github.com/shyam0507/pd-order/src/src/types"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

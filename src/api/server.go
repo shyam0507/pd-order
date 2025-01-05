@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/shyam0507/pd-order/storage"
+	"github.com/shyam0507/pd-order/src/src/storage"
 )
 
 type Server struct {

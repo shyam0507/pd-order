@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/shyam0507/pd-order/types"
+import "github.com/shyam0507/pd-order/src/src/types"
 
 type Storage interface {
 	CreateOrder(types.Order) error

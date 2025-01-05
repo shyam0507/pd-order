@@ -1,4 +1,4 @@
-module github.com/shyam0507/pd-order
+module github.com/shyam0507/pd-order/src
 
 go 1.22.6
 
