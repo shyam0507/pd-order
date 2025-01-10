@@ -134,7 +134,7 @@ func (k KafkaConsumer) ConsumePaymentReceived() error {
 
 		slog.Info("payment received event consumed", "Event", event)
 
-		if err := k.storage.UpdateOrder(event.Data.OrderId, "ORDER_CONFIRMED"); err != nil {
+		if err := k.storage.UpdateOrder(event.Data.OrderId, "CONFIRMED"); err != nil {
 			slog.Error("failed to update order status:", "Err", err)
 			continue
 		}
